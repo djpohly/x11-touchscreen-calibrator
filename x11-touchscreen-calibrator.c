@@ -571,26 +571,23 @@ int main(int argc, char *argv[])
 
     routine(&display);
 
-    for (;;) {
-        XEvent ev;
-        XRRNotifyEvent *nev;
+    XEvent ev;
+    XRRNotifyEvent *nev;
 
-        do {
-            XNextEvent(display, &ev);
-            switch (ev.type - event_base) {
-                case RRNotify:
-                    nev = (XRRNotifyEvent *) &ev;
-                    if (nev->subtype == RRNotify_OutputChange) {
-                        routine(&display);
-                    }
-                    break;
-            }
-            switch (ev.type) {
-                case ConfigureNotify:
+    while (XNextEvent(display, &ev) == Success) {
+        switch (ev.type - event_base) {
+            case RRNotify:
+                nev = (XRRNotifyEvent *) &ev;
+                if (nev->subtype == RRNotify_OutputChange) {
                     routine(&display);
-                    break;
-            }
-        } while (XPending(display));
+                }
+                break;
+        }
+        switch (ev.type) {
+            case ConfigureNotify:
+                routine(&display);
+                break;
+        }
     }
 
     XCloseDisplay(display);
