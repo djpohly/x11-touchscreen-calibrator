@@ -460,7 +460,6 @@ void scaling_none_mode(Display *display)
 void routine(Display **display)
 {
     XCloseDisplay(*display);
-    usleep(100000); /* It needs to wait for a while before X resources are ready. */
     *display = XOpenDisplay(NULL);
 
     int tries = SEARCH_RETRIES;
