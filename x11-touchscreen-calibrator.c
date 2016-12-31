@@ -461,7 +461,7 @@ void routine(Display **display)
 {
     XCloseDisplay(*display);
     usleep(100000); /* It needs to wait for a while before X resources are ready. */
-    *display = XOpenDisplay(getenv("DISPLAY"));
+    *display = XOpenDisplay(NULL);
 
     int tries = SEARCH_RETRIES;
     search_touchscreen_device(*display);
@@ -550,7 +550,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    display = XOpenDisplay(getenv("DISPLAY"));
+    display = XOpenDisplay(NULL);
 
     if (display == NULL) {
         fprintf(stderr, "Unable to connect to X server\n");
