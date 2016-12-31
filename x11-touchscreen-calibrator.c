@@ -66,8 +66,11 @@ void search_touchscreen_device(Display *display)
 
     info = XIQueryDevice(display, XIAllDevices, &ndevices);
 
+    deviceid = -1;
     for (i = 0; i < ndevices; i++) {
         dev = info + i;
+        if (dev->use == XIMasterPointer || dev->use == XIMasterKeyboard)
+            continue;
         for (j = 0; j < dev->num_classes; j++) {
             touch = (XITouchClassInfo*) dev->classes[j];
             if (touch->type == XITouchClass && touch->mode == XIDirectTouch) {
@@ -458,6 +461,10 @@ void routine(Display **display)
     *display = XOpenDisplay(getenv("DISPLAY"));
 
     search_touchscreen_device(*display);
+    if (deviceid < 0) {
+        fprintf(stderr, "Touchscreen not found\n");
+        exit(1);
+    }
     get_display_info(*display);
 
     if (touch_screen) {
