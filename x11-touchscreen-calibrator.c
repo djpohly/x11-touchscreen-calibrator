@@ -77,7 +77,7 @@ void search_touchscreen_device(Display *display)
         for (j = 0; j < dev->num_classes; j++) {
             touch = (XITouchClassInfo*) dev->classes[j];
             if (touch->type == XITouchClass && touch->mode == XIDirectTouch) {
-                if (touch_screen) free(touch_screen);
+                free(touch_screen);
                 touch_screen = strdup(dev->name);
                 deviceid = dev->deviceid;
             }
@@ -125,7 +125,7 @@ void get_display_info(Display *display)
                                 XRRModeInfo *mode_info = &res->modes[k];
                                 if (mode_info->id == *mode) {
                                     int nprop = 0;
-                                    if (preferred) free(preferred);
+                                    free(preferred);
                                     preferred = strdup(output->name);
                                     pw = mode_info->width;
                                     ph = mode_info->height;
