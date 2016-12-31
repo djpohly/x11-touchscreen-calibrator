@@ -30,6 +30,9 @@
 #include <string.h>
 #include <unistd.h>
 
+#define SEARCH_RETRIES 100
+#define SEARCH_RETRY_DELAY_US 10000
+
 static int pw; /* preferred width */
 static int ph; /* preferred height */
 static int sw; /* screen width */
@@ -460,10 +463,13 @@ void routine(Display **display)
     usleep(100000); /* It needs to wait for a while before X resources are ready. */
     *display = XOpenDisplay(getenv("DISPLAY"));
 
+    int tries = SEARCH_RETRIES;
     search_touchscreen_device(*display);
-    if (deviceid < 0) {
-        fprintf(stderr, "Touchscreen not found\n");
-        exit(1);
+    while (deviceid < 0) {
+        if (--tries <= 0)
+            exit(EXIT_FAILURE);
+        usleep(SEARCH_RETRY_DELAY_US);
+        search_touchscreen_device(*display);
     }
     get_display_info(*display);
 
